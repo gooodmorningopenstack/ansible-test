@@ -1,0 +1,11 @@
+---
+
+- name: "ansible-test | testing {{ role }}"
+  hosts: localhost
+  connection: local
+  remote_user: root
+  become: no
+  roles:
+    - { role: {{ role }} }
+  vars:
+    ansible_connection: local
