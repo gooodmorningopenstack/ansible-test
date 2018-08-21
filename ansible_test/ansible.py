@@ -1,6 +1,8 @@
 """
 Handles ansible files
 """
+import ansible
+
 from os import path
 
 from jinja2 import Template
@@ -8,44 +10,40 @@ from pkg_resources import resource_string
 
 from config import ANSIBLE_TESTDIR
 
+from ansible.errors import AnsibleOptionsError, AnsibleError
+from ansible.playbook import Play
 
-def generate_inventory(options):
+def generate_files(filename, context):
     """
-    Generate inventory file based on jinja2 template
+    Generate ansible files
     """
-    rendered_inventory_file = Template(
+    file_path = path.join(ANSIBLE_TESTDIR,
+                          "{}.yml".format(filename))
+
+    rendered_generate_file = Template(
         resource_string('ansible_test',
-                        'templates/inventory.yml.j2'
-                       ).render(options)
+                        "templates/{}.yml.j2".format(filename)
+                       ).render(context)
     )
-    with open(path.join(ANSIBLE_TESTDIR,
-                        'inventory.yml'), 'wb') as inventory_file:
-        inventory_file.write(rendered_inventory_file)
+    with open(file_path, 'wb') as generate_file:
+        generate_file.write(rendered_generate_file)
 
-
-def generate_playbook(options):
-    """
-    Generate playbook file based on jinja2 template
-    """
-    rendered_playbook_file = Template(
-        resource_string('ansible_test',
-                        'templates/playbook.yml.j2'
-                       ).render(options)
-    )
-    with open(path.join(ANSIBLE_TESTDIR,
-                        'playbook.yml'), 'wb') as playbook_file:
-        playbook_file.write(rendered_playbook_file)
+    return file_path
 
 
 def execute_playbook():
     """
+    Play ansible
     """
     # TODO
-    print("TODO")
+    pass
+    playbook_file = generate_files('playbook', context)
+    inventory_file = generate_files('inventory', context)
 
 
 def syntax_check():
     """
+    Check ansible syntax
     """
     # TODO
-    print("TODO")
+    pass

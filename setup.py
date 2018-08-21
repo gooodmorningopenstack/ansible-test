@@ -17,5 +17,5 @@ setuptools.setup(
             'ansible-test=ansible_test.__main__:main',
         ],
     },
-    install_requires=['Jinja2>=2.10']
+    install_requires=['Jinja2>=2.10', 'ansible>=2.6']
 )
