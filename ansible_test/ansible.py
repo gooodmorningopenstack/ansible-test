@@ -10,8 +10,10 @@ from pkg_resources import resource_string
 
 from config import ANSIBLE_TESTDIR
 
-from ansible.errors import AnsibleOptionsError, AnsibleError
-from ansible.playbook import Play
+import tempfile
+
+import ansible_runner
+from ansible_runner.interface import run as Runner
 
 def generate_files(filename, context):
     """
@@ -30,20 +32,31 @@ def generate_files(filename, context):
 
     return file_path
 
+def run_playbook(private_data_dir=None, playbook=None, role=None):
+    """
+    """
+    # test only purpose, need to be deleted
+    inventory = 'localhost ansible_connection=local'
+    playbook = [
+      {
+        'hosts': 'localhost',
+        'gather_facts': True,
+        'tasks': [
+          {
+            'debug': 'msg=Hello'
+          }
+        ],
+      }
+    ]
 
-def execute_playbook():
-    """
-    Play ansible
-    """
-    # TODO
-    pass
-    playbook_file = generate_files('playbook', context)
-    inventory_file = generate_files('inventory', context)
+    playbook_file = playbook or generate_files('playbook', role_name)
+    private_data_dir = private_data_dir or tempfile.mkdtemp()
 
+    cmdline = {
+      'private_data_dir': private_data_dir,
+      'playbook': playbook,
+      'inventory': inventory,
+    }
 
-def syntax_check():
-    """
-    Check ansible syntax
-    """
-    # TODO
-    pass
+    run_pb = Runner(**cmdline)
+    return run_pb
